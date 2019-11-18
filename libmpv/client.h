@@ -636,6 +636,10 @@ void mpv_resume(mpv_handle *ctx);
  */
 int64_t mpv_get_time_us(mpv_handle *ctx);
 
+double mpv_get_av_diff(mpv_handle *ctx);
+
+int64_t mpv_get_cache_size(mpv_handle *ctx);
+
 /**
  * Data format for options and properties. The API functions to get/set
  * properties and options support multiple formats, and this enum describes

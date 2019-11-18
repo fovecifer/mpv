@@ -22,6 +22,8 @@ mpv_get_property_osd_string
 mpv_get_property_string
 mpv_get_sub_api
 mpv_get_time_us
+mpv_get_av_diff
+mpv_get_cache_size
 mpv_get_wakeup_pipe
 mpv_hook_add
 mpv_hook_continue

@@ -44,6 +44,7 @@
 #include "osdep/timer.h"
 #include "osdep/io.h"
 #include "stream/stream.h"
+#include "demux/demux.h"
 
 #include "command.h"
 #include "core.h"
@@ -1878,6 +1879,38 @@ void mpv_free(void *data)
 int64_t mpv_get_time_us(mpv_handle *ctx)
 {
     return mp_time_us();
+}
+
+double mpv_get_av_diff(mpv_handle *ctx)
+{
+    struct MPContext *mpctx = ctx->mpctx;
+    struct MPOpts *opts = mpctx->opts;
+
+    mpctx->last_av_difference = 0;
+
+    if (mpctx->audio_status != STATUS_PLAYING || mpctx->video_status != STATUS_PLAYING)
+        return 0.0;
+
+    if (mpctx->vo_chain && mpctx->vo_chain->is_sparse)
+           return 0.0;
+
+    double a_pos = playing_audio_pts(mpctx);
+    if (a_pos != MP_NOPTS_VALUE && mpctx->video_pts != MP_NOPTS_VALUE) {
+           return a_pos - mpctx->video_pts + opts->audio_delay;
+    }
+    return 0.0;
+}
+
+int64_t mpv_get_cache_size(mpv_handle *ctx)
+{
+    struct MPContext *mpctx = ctx->mpctx;
+    if (mpctx->demuxer && demux_is_network_cached(mpctx->demuxer)) {
+        struct demux_reader_state s;
+       demux_get_reader_state(mpctx->demuxer, &s);
+       return s.fw_bytes;
+    } else {
+        return 0;
+    }
 }
 
 #include "video/out/libmpv.h"
