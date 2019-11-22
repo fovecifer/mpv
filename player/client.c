@@ -1913,6 +1913,18 @@ int64_t mpv_get_cache_size(mpv_handle *ctx)
     }
 }
 
+double mpv_get_ts_duration(mpv_handle *ctx)
+{
+    struct MPContext *mpctx = ctx->mpctx;
+    if (mpctx->demuxer && demux_is_network_cached(mpctx->demuxer)) {
+        struct demux_reader_state s;
+       demux_get_reader_state(mpctx->demuxer, &s);
+       return s.ts_duration;
+    } else {
+        return 0;
+    }
+}
+
 #include "video/out/libmpv.h"
 
 static void do_kill(void *ptr)
